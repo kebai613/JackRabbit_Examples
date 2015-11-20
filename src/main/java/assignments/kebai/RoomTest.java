@@ -100,13 +100,19 @@ public class RoomTest extends AccessControlTest {
             Node subTestRoom = testRoom.addNode("Sub" + TEST_NODE, "nt:Room");
             subTestRoom.setProperty("SecurityLevel", 0);
             testSession.save();
+            // change security level of sub room should not affect parent room
             assertFalse(testFile.equals(getRoomAccess(user, testRoom, testFile)));
             Node anotherFile = createFile(subTestRoom.getPath().substring(1), "testtest.txt");
             assertTrue(anotherFile.equals(getRoomAccess(user, subTestRoom, anotherFile)));
             subTestRoom.setProperty("SecurityLevel", 1);
             testSession.save();
             assertFalse(anotherFile.equals(getRoomAccess(user, subTestRoom, anotherFile)));
+            // change security level of parent room
             testRoom.setProperty("SecurityLevel", 0);
+            testSession.save();
+            // actually should be assertTrue if the change in the upper Room applies to subRoom
+            assertFalse(anotherFile.equals(getRoomAccess(user, subTestRoom, anotherFile)));
+            testRoom.setProperty("SecurityLevel", 1);
             testSession.save();
             assertFalse(anotherFile.equals(getRoomAccess(user, subTestRoom, anotherFile)));
     	} catch (Exception e) {
