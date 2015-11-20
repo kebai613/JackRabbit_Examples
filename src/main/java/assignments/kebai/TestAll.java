@@ -9,6 +9,7 @@ import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.commons.JcrUtils;
 
 public class TestAll {
+
 	public static void main(String[] args) throws Exception {
 		Session s = null;
 		try {
@@ -23,6 +24,11 @@ public class TestAll {
 			AccessControlTest accessTest = new AccessControlTest(bob);
 			accessTest.testAll();
 			System.out.println("Access control test is done!");
+			
+			// Run Room node type test
+			RoomTest roomTest = new RoomTest(bob);
+			roomTest.testAll();
+			System.out.println("Room test is done!");
 		} finally {
 			if (s != null) {
 				s.logout();

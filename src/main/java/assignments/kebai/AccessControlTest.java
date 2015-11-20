@@ -134,7 +134,25 @@ public class AccessControlTest extends AbstractAssignmentTest {
 			e.printStackTrace();
 		}
 	}
-   
+	
+	/**
+	 * Withdraw user the access to node
+	 * @param user
+	 * @param node
+	 */
+	protected void withdrawAccess(User user, Node node)
+			throws AccessDeniedException, PathNotFoundException, RepositoryException {
+		AccessControlPolicy acl = getACL(node);
+		for (AccessControlEntry e : ((AccessControlList) acl).getAccessControlEntries()) {
+			if (e.getPrincipal().equals(user.getPrincipal())) {
+				((AccessControlList) acl).removeAccessControlEntry(e);
+				testSession.getAccessControlManager().setPolicy(node.getPath(), acl);
+				testSession.save();
+				return;
+			}
+		}
+	}
+	
 	/**
 	 * @param node
 	 * @return access control list for node
@@ -142,7 +160,7 @@ public class AccessControlTest extends AbstractAssignmentTest {
 	 * @throws AccessDeniedException 
 	 * @throws RepositoryException
 	 */
-	private AccessControlPolicy getACL(Node node)
+	protected AccessControlPolicy getACL(Node node)
 			throws AccessDeniedException, PathNotFoundException, RepositoryException  {
 		AccessControlPolicy acl = null;
 		AccessControlManager aMgr = null;
